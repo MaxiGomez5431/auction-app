@@ -94,7 +94,7 @@ export default function AuctionsPage() {
           title="No hay subastas registradas"
           description="Comienza creando la primera subasta"
           buttonText="Crear Primera Subasta"
-          buttonLink="/admin/auctions/new"
+          buttonLink="/admin/auction/new"
         />
       ) : (
         <div className="space-y-4">

@@ -1,27 +1,34 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { auctionService } from '@/services/auction.service';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { AuctionList } from '../components/AuctionList';
-import { Suspense } from 'react';
+import { Auction } from '@/types/types';
 
-export const revalidate = 60;
+export default function HomePage() {
+  const [auctions, setAuctions] = useState<Auction[]>([]);
+  const [loading, setLoading] = useState(true);
 
-async function getAuctions() {
-  try {
-    // En servidor, podemos llamar directamente al backend
-    const auctions = await auctionService.getAll();
-    return auctions;
-  } catch (error) {
-    console.error('Error fetching auctions:', error);
-    return []; // Devolver array vacío en caso de error
-  }
-}
+  useEffect(() => {
+    const fetchAuctions = async () => {
+      try {
+        const data = await auctionService.getAll();
+        setAuctions(data);
+      } catch (error) {
+        console.error('Error fetching auctions:', error);
+        setAuctions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-export default async function HomePage() {
-  const auctions = await getAuctions();
+    fetchAuctions();
+  }, []);
 
   return (
     <div className="space-y-8">
-      {/* Título principal */}
+      {/* Título */}
       <section className="text-center py-12">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
           🎨 Subastas de Arte
@@ -35,10 +42,12 @@ export default async function HomePage() {
         <h2 className="text-2xl font-semibold text-gray-800 mb-6">
           Subastas Disponibles
         </h2>
-        
-        <Suspense fallback={<LoadingSpinner />}>
+
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
           <AuctionList auctions={auctions} />
-        </Suspense>
+        )}
       </section>
     </div>
   );

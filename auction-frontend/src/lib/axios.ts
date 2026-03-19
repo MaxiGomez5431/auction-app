@@ -1,26 +1,22 @@
 import axios from 'axios';
 
-const getBaseURL = () => {
-  // SERVER (Next.js SSR dentro de Docker)
-  if (typeof window === 'undefined') {
-    return 'http://backend:3001';
-  }
+const isServer = typeof window === 'undefined';
 
-  // CLIENT (browser)
-  return process.env.NEXT_PUBLIC_API_URL;
-};
+const baseURL = isServer
+  ? 'http://backend:3001' // Docker (SSR)
+  : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'; // Cliente
+
 
 const api = axios.create({
-  baseURL: getBaseURL(),
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
-  proxy: false,
 });
 
 // Interceptor para agregar token (solo en cliente)
 api.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
+  if (!isServer) {
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -33,8 +29,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // SOLO manejar auth en cliente
-    if (typeof window !== 'undefined') {
+    if (!isServer) {
       if (error.response?.status === 401) {
         const errorMessage = error.response?.data?.message || '';
 
