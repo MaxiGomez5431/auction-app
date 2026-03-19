@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      context: ./auction-backend
+      dockerfile: Dockerfile
+    container_name: auction-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=file:./data/dev.db
+      - JWT_SECRET=tu-secreto-super-seguro
+      - NODE_ENV=production
+    volumes:
+      - sqlite-data:/app/data
+    networks:
+      - auction-network
+
+  frontend:
+    build:
+      context: ./auction-frontend
+      dockerfile: Dockerfile
+    container_name: auction-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:3001
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    networks:
+      - auction-network
+
+networks:
+  auction-network:
+    driver: bridge
+
+volumes:
+  sqlite-data:
