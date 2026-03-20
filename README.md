@@ -65,9 +65,14 @@ A continuación, el modelo de datos creado para el problema:
 
 <img width="662" height="449" alt="Diagrama sin título drawio" src="https://github.com/user-attachments/assets/d71bc510-bf76-4765-92bc-e9520a736535" />
 
+Se mantuvieron la menor cantidad de datos posibles en cada entidad en pos de la simplicidad del ejercicio. 
+
 # Supuestos y simplificaciones
 
 A manera de simplificar el desarrollo y centrarse en las caracteristicas más importantes del proyecto, se simplificó lo siguiente:
 
 - Las entidades solo se pueden crear y eliminar, no se pueden editar.
-- El listado de obras disponible se unió con el de subastas disponibles, dada la poca cantidad de datos que se tiene de las obras, no tenía sentido un apartado solo para ver las obras del sistema. 
+- El listado de obras disponible se unió con el de subastas disponibles, dada la poca cantidad de datos que se tiene de las obras, no tenía sentido un apartado solo para ver las obras del sistema.
+- Las imagenes reciben de las obras se suben por medio de una URL.
+- No se puede aplicar el rol de admin a otro usuario, hay un único admin en el sistema.
+
